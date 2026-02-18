@@ -62,7 +62,7 @@ export default function HomePage() {
   }
 
   const handleAddToCart = (product: any) => {
-    addToCart({...product, quantity: 1});
+    addToCart({...product, quantity: 1 });
     showToast(`${product.title.slice(0, 30)}... added to cart! 🛒`);
   };
 
