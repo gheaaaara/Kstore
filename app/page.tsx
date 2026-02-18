@@ -61,7 +61,7 @@ export default function HomePage() {
     }, 2500)
   }
 
-  const handleAddToCart = (product: Product) => {
+  const handleAddToCart = (product: any) => {
     addToCart(product)
     showToast(`"${product.title.slice(0, 30)}${product.title.length > 30 ? '...' : ''}" added to cart! 🛒`)
   }
