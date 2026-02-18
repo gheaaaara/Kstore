@@ -2,13 +2,17 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-interface CartItem extends Product {  // extend dari interface Product-mu
+interface CartItem {
+  id: number;
+  title: string;
+  price: number;
+  image: string;
   quantity: number;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: CartItem) => void;
   removeFromCart: (id: number) => void;
   total: number;
   // ... lainnya kalau ada
