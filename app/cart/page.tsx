@@ -14,7 +14,7 @@ export default function Cart() {
         <p className="text-center text-gray-500">Your cart is empty. Let's start shopping!</p>
       ) : (
         <>
-          {cartItems.map((item) => (
+          {cartItems.map((item: any) => (
             <div
               key={item.id}  // Sekarang unik, karena no duplikat id
               className="flex justify-between items-center border-b py-4"
