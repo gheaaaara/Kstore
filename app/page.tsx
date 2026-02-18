@@ -62,9 +62,9 @@ export default function HomePage() {
   }
 
   const handleAddToCart = (product: any) => {
-    addToCart(product)
-    showToast(`"${product.title.slice(0, 30)}${product.title.length > 30 ? '...' : ''}" added to cart! 🛒`)
-  }
+    addToCart({product, quantity: 1});
+    showToast(`${product.title.slice(0, 30)}... added to cart! 🛒`);
+  };
 
   return (
     <div className="p-8 min-h-screen bg-gray-50 relative"> {/* relative biar toast position absolute work */}
