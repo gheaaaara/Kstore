@@ -55,6 +55,7 @@ export default function ProductDetailClient({
                 title: product.title,
                 price: product.price,
                 image: product.image,
+                quantity: 1,
               })
             }
             className="bg-purple-600 text-white px-6 py-3 rounded-xl hover:bg-purple-700 transition"
