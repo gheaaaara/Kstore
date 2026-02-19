@@ -17,12 +17,16 @@ export const revalidate = 60;
 
 export async function generateStaticParams(){
   const res = await fetch('https://fakestoreapi.com/products');
-  const products = await res.json();
+  if (!res.ok) return null;
 
-  return products.map((product: any) => ({
+  const products = await res.json();
+  return products.map((product) => ({
     id: product.id.toString(),
   }));
-}
+  } catch (error) {
+    console.error("build error:", error);
+    return null;
+  }
 
 async function getProduct(id: string): Promise<Product | null> {
   try {
