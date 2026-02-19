@@ -10,15 +10,30 @@ interface Product {
   rating: { rate: number; count: number };
 }
 
+export const dynamicParams = true; // allow dynamic params beyond static ones
+
 export const revalidate = 60; // ISR: revalidate setiap 60 detik
 
 export async function generateStaticParams() {
-  const res = await fetch('https://fakestoreapi.com/products');
-  const products: Product[] = await res.json();  // <-- tambah tipe array
+  try {
+    const res = await fetch('https://fakestoreapi.com/products', {
+      next: { revalidate: 3600 } // cache 1 jam biar stabil
+    });
 
-  return products.map((product: Product) => ({  // <-- tambah : Product di parameter
-    id: product.id.toString(),
-  }));
+    if (!res.ok) {
+      console.error('Fetch products failed in generateStaticParams:', res.status);
+      return []; // fallback: no pre-generated paths, page jadi dynamic
+    }
+
+    const products: Product[] = await res.json();
+
+    return products.map((product: Product) => ({
+      id: product.id.toString(),
+    }));
+  } catch (error) {
+    console.error('Error in generateStaticParams:', error);
+    return []; // aman, build lanjut tanpa crash
+  }
 }
 
 async function getProduct(id: string): Promise<Product | null> {
