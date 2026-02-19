@@ -25,7 +25,7 @@ export async function generateStaticParams() {
 
 async function getProduct(id: string): Promise<Product | null> {
   try {
-    const res = await fetch(`https://fakestoreapi.com/products/${id}`);
+    const res = await fetch(`https://fakestoreapi.com/products/${id}`, {cache: 'no-store'});
     if (!res.ok) return null;
     return await res.json();
   } catch (e) {

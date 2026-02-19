@@ -28,11 +28,11 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           <p className="text-blue-600 text-2xl font-semibold mb-4">${product.price}</p>
           <p className="text-gray-600 mb-6">{product.description}</p>
           <button 
-            onClick={handleAddToCart}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700"
+            onClick={() => addToCart({ ...product, quantity: 1 })} // TAMBAHKAN quantity: 1
+            className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold"
           >
             Add to Cart
-          </button>
+        </button>
         </div>
       </div>
     </div>
