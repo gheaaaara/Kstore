@@ -53,7 +53,7 @@ export default async function ProductDetail({
     return (
       <div className="p-10 text-center">
         <h1 className="text-2xl font-bold">Product not found</h1>
-        <p>Maaf, produk dengan ID {id} tidak ditemukan.</p>
+        <p>Sorry, product {id} not found.</p>
       </div>
     );
   }
