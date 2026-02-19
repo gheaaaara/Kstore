@@ -13,15 +13,11 @@ interface Product {
 export const revalidate = 60; // ISR: revalidate setiap 60 detik
 
 export async function generateStaticParams() {
-  const res = await fetch('https://fakestoreapi.com/products', {
-    next: { revalidate: 3600 } // Optional: cache 1 jam biar build lebih cepat
-  });
-  if (!res.ok) return [];
+  const res = await fetch('https://fakestoreapi.com/products');
+  const products: Product[] = await res.json();  // <-- tambah tipe array
 
-  const products: Product[] = await res.json();
-
-  return products.map((product: Product) => ({
-    id: product.id.toString(), // wajib string untuk dynamic route [id]
+  return products.map((product: Product) => ({  // <-- tambah : Product di parameter
+    id: product.id.toString(),
   }));
 }
 
