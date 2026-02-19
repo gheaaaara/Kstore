@@ -13,14 +13,22 @@ interface Product {
   }
 }
 
-async function getProduct(id: string): Promise<Product | null> {
+export const revalidate = 60;
+export async function generateStaticParams(){
+  const res = await fetch('https://fakestoreapi.com/products');
+  const products = await res.json();
+
+  return products.map((product: any) => ({
+    id: product.id.toString(),
+  }));
+}
+
+async function getProduct(id: string): {
   try {
     const res = await fetch(
-      `https://fakestoreapi.com/products/${id}`,
-      { cache: "no-store" }
-    )
+      `https://fakestoreapi.com/products/${id}`);
 
-    if (!res.ok) return null
+    if (!res.ok) return null;
 
     return await res.json()
   } catch (error) {
