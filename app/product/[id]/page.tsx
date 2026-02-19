@@ -14,6 +14,7 @@ interface Product {
 }
 
 export const revalidate = 60;
+
 export async function generateStaticParams(){
   const res = await fetch('https://fakestoreapi.com/products');
   const products = await res.json();
@@ -23,7 +24,7 @@ export async function generateStaticParams(){
   }));
 }
 
-async function getProduct(id: string): {
+async function getProduct(id: string): Promise<Product | null> {
   try {
     const res = await fetch(
       `https://fakestoreapi.com/products/${id}`);
