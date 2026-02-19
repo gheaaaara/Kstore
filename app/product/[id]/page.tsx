@@ -13,19 +13,17 @@ interface Product {
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  try {
-    const res = await fetch('https://fakestoreapi.com/products');
-    if (!res.ok) return [];
-    const products: Product[] = await res.json();
-    return products.map((p) => ({ id: p.id.toString() }));
-  } catch (e) {
-    return [];
-  }
+  const res = await fetch('https://fakestoreapi.com/products');
+  const products = await res.json();
+
+  return products.map((product) => ({
+    id: product.id.toString(),  
+  }));
 }
 
 async function getProduct(id: string): Promise<Product | null> {
   try {
-    const res = await fetch(`https://fakestoreapi.com/products/${id}`, {cache: 'no-store'});
+    const res = await fetch(`https://fakestoreapi.com/products/${params.id}`, { cache: 'no-store' });
     if (!res.ok) return null;
     return await res.json();
   } catch (e) {
