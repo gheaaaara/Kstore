@@ -10,55 +10,56 @@ interface Product {
   rating: { rate: number; count: number };
 }
 
-export const dynamicParams = true; // allow dynamic params beyond static ones
-
-export const revalidate = 60; // ISR: revalidate setiap 60 detik
-
-export async function generateStaticParams() {
-  try {
-    const res = await fetch('https://fakestoreapi.com/products', {
-      next: { revalidate: 3600 } // cache 1 jam biar stabil
-    });
-
-    if (!res.ok) {
-      console.error('Fetch products failed in generateStaticParams:', res.status);
-      return []; // fallback: no pre-generated paths, page jadi dynamic
-    }
-
-    const products: Product[] = await res.json();
-
-    return products.map((product: Product) => ({
-      id: product.id.toString(),
-    }));
-  } catch (error) {
-    console.error('Error in generateStaticParams:', error);
-    return []; // aman, build lanjut tanpa crash
-  }
-}
+// Force dynamic biar Vercel jalankan di runtime, bukan build time
+export const dynamic = 'force-dynamic';
 
 async function getProduct(id: string): Promise<Product | null> {
   try {
     const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
-      cache: 'no-store' // force SSR / fresh data setiap request
+      cache: 'no-store',
+      // Tambah timeout biar gak hang lama kalau API lambat
+      signal: AbortSignal.timeout(10000), // 10 detik timeout
     });
-    if (!res.ok) return null;
-    return await res.json();
+
+    if (!res.ok) {
+      console.warn(`Product ${id} not ok: ${res.status}`);
+      return null;
+    }
+
+    const data = await res.json();
+    return data;
   } catch (error) {
-    console.error('Error fetching product:', error);
-    return null;
+    console.error(`Critical error fetching product ${id}:`, error);
+    return null; // selalu return null kalau error apa pun
   }
 }
 
 export default async function ProductDetail({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const product = await getProduct(id);
+  let product: Product | null = null;
+  let errorMessage = '';
+
+  try {
+    const { id } = await params;
+    product = await getProduct(id);
+  } catch (error) {
+    console.error('Error in ProductDetail:', error);
+    errorMessage = 'Terjadi kesalahan server. Coba lagi nanti.';
+  }
 
   if (!product) {
     return (
-      <div className="p-10 text-center min-h-screen flex items-center justify-center">
-        <div>
-          <h1 className="text-3xl font-bold text-red-600 mb-4">Product Not Found</h1>
-          <p className="text-gray-600">Produk yang Anda cari tidak tersedia atau ID salah.</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-8">
+        <div className="text-center max-w-lg">
+          <h1 className="text-4xl font-bold text-red-600 mb-4">Produk Tidak Ditemukan</h1>
+          <p className="text-lg text-gray-700 mb-6">
+            {errorMessage || `Maaf, produk dengan ID ini tidak tersedia saat ini.`}
+          </p>
+          <a
+            href="/"
+            className="inline-block bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition"
+          >
+            Kembali ke Beranda
+          </a>
         </div>
       </div>
     );
