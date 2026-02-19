@@ -10,7 +10,6 @@ interface Product {
   rating: { rate: number; count: number };
 }
 
-// Force dynamic biar Vercel jalankan di runtime, bukan build time
 export const dynamic = 'force-dynamic';
 
 async function getProduct(id: string): Promise<Product | null> {
@@ -43,22 +42,22 @@ export default async function ProductDetail({ params }: { params: Promise<{ id: 
     product = await getProduct(id);
   } catch (error) {
     console.error('Error in ProductDetail:', error);
-    errorMessage = 'Terjadi kesalahan server. Coba lagi nanti.';
+    errorMessage = 'A server error occured. Please try again later.';
   }
 
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-8">
         <div className="text-center max-w-lg">
-          <h1 className="text-4xl font-bold text-red-600 mb-4">Produk Tidak Ditemukan</h1>
+          <h1 className="text-4xl font-bold text-red-600 mb-4">Product Not Found</h1>
           <p className="text-lg text-gray-700 mb-6">
-            {errorMessage || `Maaf, produk dengan ID ini tidak tersedia saat ini.`}
+            {errorMessage || `Sorry, product with this ID is not available at this time.`}
           </p>
           <a
             href="/"
             className="inline-block bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition"
           >
-            Kembali ke Beranda
+            Return to Home
           </a>
         </div>
       </div>
